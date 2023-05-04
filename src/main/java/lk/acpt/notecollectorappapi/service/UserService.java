@@ -1,11 +1,11 @@
 package lk.acpt.notecollectorappapi.service;
 
-import lk.acpt.notecollectorappapi.dto.request.RequestAuthenticateUserDTO;
 import lk.acpt.notecollectorappapi.dto.request.RequestSaveUserDTO;
+import lk.acpt.notecollectorappapi.dto.request.RequestUserLogInDTO;
+import lk.acpt.notecollectorappapi.entity.User;
 
 public interface UserService {
+    User saveUser(RequestSaveUserDTO saveUserDTO);
 
-    boolean addUser(RequestSaveUserDTO requestSaveUserDTO);
-
-    boolean authenticateUser(RequestAuthenticateUserDTO requestAuthenticateUserDTO);
+    User authenticateUser(RequestUserLogInDTO logInDTO);
 }

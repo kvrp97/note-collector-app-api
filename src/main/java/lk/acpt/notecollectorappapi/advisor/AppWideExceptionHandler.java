@@ -1,6 +1,7 @@
 package lk.acpt.notecollectorappapi.advisor;
 
 import lk.acpt.notecollectorappapi.exception.DuplicateException;
+import lk.acpt.notecollectorappapi.exception.NoteSaveException;
 import lk.acpt.notecollectorappapi.exception.NotFoundException;
 import lk.acpt.notecollectorappapi.exception.UnauthorizedException;
 import lk.acpt.notecollectorappapi.util.StandardResponse;
@@ -33,6 +34,14 @@ public class AppWideExceptionHandler {
         return new ResponseEntity<>(
                 new StandardResponse(401, e.getMessage(), false),
                 HttpStatus.UNAUTHORIZED
+        );
+    }
+
+    @ExceptionHandler(NoteSaveException.class)
+    public ResponseEntity<StandardResponse> handleFileUploadException(NoteSaveException e){
+        return new ResponseEntity<>(
+                new StandardResponse(501, e.getMessage(), null),
+                HttpStatus.NOT_IMPLEMENTED
         );
     }
 }

@@ -7,19 +7,20 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "note_image")
+@Table(name = "note_images")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class NoteImages {
+public class NoteImage {
     @Id
     @Column(name = "note_image_id", length = 25)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer noteImageId;
 
+    @Column(name = "image_name")
     private String imageName;
 
-    @ManyToOne
-    @JoinColumn(name="note_id", nullable=false)
-    private Note note;
+    @Column(name = "image_path")
+    private String imagePath;
+
 }

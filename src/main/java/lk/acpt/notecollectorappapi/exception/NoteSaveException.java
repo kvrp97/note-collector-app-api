@@ -3,9 +3,11 @@ package lk.acpt.notecollectorappapi.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class NotFoundException extends RuntimeException{
-    public NotFoundException(String message) {
+import java.io.IOException;
+
+@ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+public class NoteSaveException extends IOException {
+    public NoteSaveException(String message){
         super(message);
     }
 }

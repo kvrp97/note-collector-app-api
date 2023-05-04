@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "notes")
@@ -27,6 +27,9 @@ public class Note {
     @Column(name = "date_time", length = 30, nullable = false)
     private String dateTime;
 
-    @OneToMany(mappedBy = "note")
-    private Set<NoteImages> noteImages;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "note_id", referencedColumnName = "note_id")
+    private List<NoteImage> noteImages;
+
+
 }

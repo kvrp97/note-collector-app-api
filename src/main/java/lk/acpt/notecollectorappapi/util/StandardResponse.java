@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @Data
 public class StandardResponse {
-    private Integer code;
+    private Integer statusCode;
     private String message;
     private Object data;
 }
