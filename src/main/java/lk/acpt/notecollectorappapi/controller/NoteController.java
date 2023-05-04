@@ -1,9 +1,11 @@
 package lk.acpt.notecollectorappapi.controller;
 
+import lk.acpt.notecollectorappapi.dto.request.RequestNoteImageRemoveDTO;
 import lk.acpt.notecollectorappapi.dto.request.RequestUpdateNoteTitleAndDescriptionDTO;
 import lk.acpt.notecollectorappapi.dto.response.ResponseNoteDTO;
 import lk.acpt.notecollectorappapi.entity.Note;
 import lk.acpt.notecollectorappapi.exception.NoteSaveException;
+import lk.acpt.notecollectorappapi.service.NoteImageService;
 import lk.acpt.notecollectorappapi.service.NoteService;
 import lk.acpt.notecollectorappapi.util.StandardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ import java.util.List;
 public class NoteController {
     @Autowired
     private NoteService noteService;
+
+    @Autowired
+    private NoteImageService noteImageService;
 
     @PostMapping("save")
     public ResponseEntity<StandardResponse> saveNote(@RequestParam("title") String title,
@@ -61,6 +66,15 @@ public class NoteController {
         return new ResponseEntity<>(
                 new StandardResponse(201, "Note Updated", note.getNoteId()),
                 HttpStatus.CREATED
+        );
+    }
+
+    @PutMapping("/update-by-removing-image")
+    public ResponseEntity<StandardResponse> updateNoteByRemovingImages(@RequestBody RequestNoteImageRemoveDTO noteImageRemoveDTO){
+        Note note = noteImageService.updateNoteByRemovingImages(noteImageRemoveDTO);
+        return new ResponseEntity<>(
+                new StandardResponse(200, "Note's images removed", note),
+                HttpStatus.OK
         );
     }
 }
