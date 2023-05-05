@@ -4,6 +4,7 @@ import lk.acpt.notecollectorappapi.dto.request.RequestUpdateNoteTitleAndDescript
 import lk.acpt.notecollectorappapi.dto.response.ResponseNoteDTO;
 import lk.acpt.notecollectorappapi.entity.Note;
 import lk.acpt.notecollectorappapi.entity.NoteImage;
+import lk.acpt.notecollectorappapi.exception.ImageUploadException;
 import lk.acpt.notecollectorappapi.exception.NotFoundException;
 import lk.acpt.notecollectorappapi.repo.NoteRepo;
 import lk.acpt.notecollectorappapi.service.NoteService;
@@ -35,7 +36,7 @@ public class NoteServiceIMPL implements NoteService {
 
     @Override
     @Transactional
-    public Note saveNote(String title, String description, String dateTime, MultipartFile[] images) throws IOException {
+    public Note saveNote(String title, String description, String dateTime, MultipartFile[] images) throws ImageUploadException {
         Note note = new Note();
         note.setTitle(title);
         note.setDescription(description);
@@ -45,8 +46,12 @@ public class NoteServiceIMPL implements NoteService {
             for (MultipartFile image : images){
                 String imageName = UUID.randomUUID().toString().substring(0,8) + Objects.requireNonNull(image.getOriginalFilename()).replaceAll("\\s","");
                 String imagePath = FOLDER_PATH + imageName;
-                image.transferTo(new File(imagePath));
-
+                try {
+                    image.transferTo(new File(imagePath));
+                }catch (Exception e) {
+                    System.err.println(e);
+                    throw new ImageUploadException(e.getMessage());
+                }
                 NoteImage noteImage = new NoteImage();
                 noteImage.setImageName(imageName);
                 noteImage.setImagePath("http://localhost:8091/images/" +imageName);

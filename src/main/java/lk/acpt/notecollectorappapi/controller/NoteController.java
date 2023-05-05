@@ -5,6 +5,7 @@ import lk.acpt.notecollectorappapi.dto.request.RequestUpdateNoteTitleAndDescript
 import lk.acpt.notecollectorappapi.dto.response.ResponseNoteDTO;
 import lk.acpt.notecollectorappapi.entity.Note;
 import lk.acpt.notecollectorappapi.exception.NoteSaveException;
+import lk.acpt.notecollectorappapi.exception.NoteUpdateException;
 import lk.acpt.notecollectorappapi.service.NoteImageService;
 import lk.acpt.notecollectorappapi.service.NoteService;
 import lk.acpt.notecollectorappapi.util.StandardResponse;
@@ -70,7 +71,7 @@ public class NoteController {
     }
 
     @PutMapping("/update-by-removing-image")
-    public ResponseEntity<StandardResponse> updateNoteByRemovingImages(@RequestBody RequestNoteImageRemoveDTO noteImageRemoveDTO){
+    public ResponseEntity<StandardResponse> updateNoteByRemovingImages(@RequestBody RequestNoteImageRemoveDTO noteImageRemoveDTO) throws NoteUpdateException {
         Note note = noteImageService.updateNoteByRemovingImages(noteImageRemoveDTO);
         return new ResponseEntity<>(
                 new StandardResponse(200, "Note's images removed", note),

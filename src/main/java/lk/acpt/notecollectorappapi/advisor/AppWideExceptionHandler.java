@@ -1,9 +1,6 @@
 package lk.acpt.notecollectorappapi.advisor;
 
-import lk.acpt.notecollectorappapi.exception.DuplicateException;
-import lk.acpt.notecollectorappapi.exception.NoteSaveException;
-import lk.acpt.notecollectorappapi.exception.NotFoundException;
-import lk.acpt.notecollectorappapi.exception.UnauthorizedException;
+import lk.acpt.notecollectorappapi.exception.*;
 import lk.acpt.notecollectorappapi.util.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +36,22 @@ public class AppWideExceptionHandler {
 
     @ExceptionHandler(NoteSaveException.class)
     public ResponseEntity<StandardResponse> handleFileUploadException(NoteSaveException e){
+        return new ResponseEntity<>(
+                new StandardResponse(501, e.getMessage(), null),
+                HttpStatus.NOT_IMPLEMENTED
+        );
+    }
+
+    @ExceptionHandler(NoteUpdateException.class)
+    public ResponseEntity<StandardResponse> handleNoteUpdateException(NoteUpdateException e){
+        return new ResponseEntity<>(
+                new StandardResponse(501, e.getMessage(), null),
+                HttpStatus.NOT_IMPLEMENTED
+        );
+    }
+
+    @ExceptionHandler(ImageUploadException.class)
+    public ResponseEntity<StandardResponse> handleImageUploadException(ImageUploadException e){
         return new ResponseEntity<>(
                 new StandardResponse(501, e.getMessage(), null),
                 HttpStatus.NOT_IMPLEMENTED
