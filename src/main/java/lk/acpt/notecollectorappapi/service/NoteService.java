@@ -23,4 +23,6 @@ public interface NoteService {
     Note updateNoteByAddingImage(Integer noteId, String dateTime, MultipartFile[] images) throws ImageUploadException;
 
     Note updateNoteByRemovingImages(RequestNoteImageRemoveDTO noteImageRemoveDTO) throws ImageRemoveException;
+
+    boolean deleteNote(Integer noteId) throws ImageRemoveException;
 }

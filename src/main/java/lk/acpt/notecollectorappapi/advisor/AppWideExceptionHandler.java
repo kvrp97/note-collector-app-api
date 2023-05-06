@@ -37,7 +37,7 @@ public class AppWideExceptionHandler {
     @ExceptionHandler(NoteSaveException.class)
     public ResponseEntity<StandardResponse> handleFileUploadException(NoteSaveException e){
         return new ResponseEntity<>(
-                new StandardResponse(501, e.getMessage(), null),
+                new StandardResponse(501, e.getMessage(), false),
                 HttpStatus.NOT_IMPLEMENTED
         );
     }
@@ -45,7 +45,7 @@ public class AppWideExceptionHandler {
     @ExceptionHandler(NoteUpdateException.class)
     public ResponseEntity<StandardResponse> handleNoteUpdateException(NoteUpdateException e){
         return new ResponseEntity<>(
-                new StandardResponse(501, e.getMessage(), null),
+                new StandardResponse(501, e.getMessage(), false),
                 HttpStatus.NOT_IMPLEMENTED
         );
     }
@@ -53,13 +53,21 @@ public class AppWideExceptionHandler {
     @ExceptionHandler(ImageUploadException.class)
     public ResponseEntity<StandardResponse> handleImageUploadException(ImageUploadException e){
         return new ResponseEntity<>(
-                new StandardResponse(501, e.getMessage(), null),
+                new StandardResponse(501, e.getMessage(), false),
                 HttpStatus.NOT_IMPLEMENTED
         );
     }
 
     @ExceptionHandler(ImageRemoveException.class)
-    public ResponseEntity<StandardResponse> handleImageUploadException(ImageRemoveException e){
+    public ResponseEntity<StandardResponse> handleImageRemoveException(ImageRemoveException e){
+        return new ResponseEntity<>(
+                new StandardResponse(417, e.getMessage(), false),
+                HttpStatus.EXPECTATION_FAILED
+        );
+    }
+
+    @ExceptionHandler(NoteDeleteException.class)
+    public ResponseEntity<StandardResponse> handleNoteDeleteException(NoteDeleteException e){
         return new ResponseEntity<>(
                 new StandardResponse(417, e.getMessage(), false),
                 HttpStatus.EXPECTATION_FAILED

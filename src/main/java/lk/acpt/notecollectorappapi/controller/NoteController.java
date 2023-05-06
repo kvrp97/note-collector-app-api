@@ -4,6 +4,7 @@ import lk.acpt.notecollectorappapi.dto.request.RequestNoteImageRemoveDTO;
 import lk.acpt.notecollectorappapi.dto.request.RequestUpdateNoteTitleAndDescriptionDTO;
 import lk.acpt.notecollectorappapi.dto.response.ResponseNoteDTO;
 import lk.acpt.notecollectorappapi.entity.Note;
+import lk.acpt.notecollectorappapi.exception.NoteDeleteException;
 import lk.acpt.notecollectorappapi.exception.NoteSaveException;
 import lk.acpt.notecollectorappapi.exception.NoteUpdateException;
 import lk.acpt.notecollectorappapi.service.NoteService;
@@ -32,7 +33,7 @@ public class NoteController {
         try {
             Note note = noteService.saveNote(title,description,dateTime,images);
             return new ResponseEntity<>(
-                    new StandardResponse(201, "New Note Added", note.getNoteId()),
+                    new StandardResponse(201, "New Note Added", "Note Id : "+ note.getNoteId()),
                     HttpStatus.CREATED
             );
         } catch (Exception e) {
@@ -62,7 +63,7 @@ public class NoteController {
     public ResponseEntity<StandardResponse> updateNoteTitleAndDescription(@RequestBody RequestUpdateNoteTitleAndDescriptionDTO noteTitleAndDescriptionDTO){
         Note note = noteService.updateNoteTitleAndDescription(noteTitleAndDescriptionDTO);
         return new ResponseEntity<>(
-                new StandardResponse(201, "Note Updated", note.getNoteId()),
+                new StandardResponse(201, "Texts Updated", "Note Id : "+ note.getNoteId()),
                 HttpStatus.CREATED
         );
     }
@@ -73,13 +74,12 @@ public class NoteController {
         try {
             Note note = noteService.updateNoteByRemovingImages(noteImageRemoveDTO);
             return new ResponseEntity<>(
-                    new StandardResponse(200, "Note's images removed", note.getNoteId()),
+                    new StandardResponse(200, "Removed Images","Note Id : "+ note.getNoteId()),
                     HttpStatus.OK
             );
         } catch (Exception e){
             throw new NoteUpdateException(e.getMessage());
         }
-
     }
 
     @PutMapping("/update-by-adding-image")
@@ -89,11 +89,24 @@ public class NoteController {
         try {
             Note note = noteService.updateNoteByAddingImage(noteId,dateTime,images);
             return new ResponseEntity<>(
-                    new StandardResponse(201, "Images added", note.getNoteId()),
+                    new StandardResponse(201, "Added Images","Note Id : "+ note.getNoteId()),
                     HttpStatus.CREATED
             );
         } catch (Exception e){
             throw new NoteUpdateException(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/delete-note/{noteId}")
+    public ResponseEntity<StandardResponse> deleteNote(@PathVariable(value = "noteId") Integer noteId){
+        try{
+            boolean isDeleted = noteService.deleteNote(noteId);
+            return new ResponseEntity<>(
+                    new StandardResponse(200 , "Note Deleted", isDeleted),
+                    HttpStatus.OK
+            );
+        } catch (Exception e){
+            throw new NoteDeleteException(e.getMessage());
         }
     }
 }

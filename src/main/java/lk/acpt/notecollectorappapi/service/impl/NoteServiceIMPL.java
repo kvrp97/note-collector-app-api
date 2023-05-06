@@ -127,4 +127,17 @@ public class NoteServiceIMPL implements NoteService {
         }
     }
 
+    @Override
+    public boolean deleteNote(Integer noteId) throws ImageRemoveException {
+        Note note = noteRepo.findById(noteId).orElseThrow(()-> new NotFoundException("Invalid note id : "+ noteId));
+        List<NoteImage> noteImageList = note.getNoteImages();
+        try {
+            noteImageService.removeImage(noteImageList);
+        } catch (IOException e) {
+            throw new ImageRemoveException(e.getMessage());
+        }
+        noteRepo.deleteById(noteId);
+        return true;
+    }
+
 }
