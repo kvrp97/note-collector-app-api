@@ -57,4 +57,12 @@ public class AppWideExceptionHandler {
                 HttpStatus.NOT_IMPLEMENTED
         );
     }
+
+    @ExceptionHandler(ImageRemoveException.class)
+    public ResponseEntity<StandardResponse> handleImageUploadException(ImageRemoveException e){
+        return new ResponseEntity<>(
+                new StandardResponse(417, e.getMessage(), false),
+                HttpStatus.EXPECTATION_FAILED
+        );
+    }
 }

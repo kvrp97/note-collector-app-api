@@ -6,7 +6,6 @@ import lk.acpt.notecollectorappapi.dto.response.ResponseNoteDTO;
 import lk.acpt.notecollectorappapi.entity.Note;
 import lk.acpt.notecollectorappapi.exception.NoteSaveException;
 import lk.acpt.notecollectorappapi.exception.NoteUpdateException;
-import lk.acpt.notecollectorappapi.service.NoteImageService;
 import lk.acpt.notecollectorappapi.service.NoteService;
 import lk.acpt.notecollectorappapi.util.StandardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +23,6 @@ public class NoteController {
     @Autowired
     private NoteService noteService;
 
-    @Autowired
-    private NoteImageService noteImageService;
 
     @PostMapping("save")
     public ResponseEntity<StandardResponse> saveNote(@RequestParam("title") String title,
@@ -72,10 +69,31 @@ public class NoteController {
 
     @PutMapping("/update-by-removing-image")
     public ResponseEntity<StandardResponse> updateNoteByRemovingImages(@RequestBody RequestNoteImageRemoveDTO noteImageRemoveDTO) throws NoteUpdateException {
-        Note note = noteImageService.updateNoteByRemovingImages(noteImageRemoveDTO);
-        return new ResponseEntity<>(
-                new StandardResponse(200, "Note's images removed", note),
-                HttpStatus.OK
-        );
+
+        try {
+            Note note = noteService.updateNoteByRemovingImages(noteImageRemoveDTO);
+            return new ResponseEntity<>(
+                    new StandardResponse(200, "Note's images removed", note.getNoteId()),
+                    HttpStatus.OK
+            );
+        } catch (Exception e){
+            throw new NoteUpdateException(e.getMessage());
+        }
+
+    }
+
+    @PutMapping("/update-by-adding-image")
+    public ResponseEntity<StandardResponse> updateNoteByAddingImage(@RequestParam("noteId") Integer noteId,
+                                                                    @RequestParam("dateTime") String dateTime,
+                                                                    @RequestParam(value = "images") MultipartFile[] images) throws NoteUpdateException {
+        try {
+            Note note = noteService.updateNoteByAddingImage(noteId,dateTime,images);
+            return new ResponseEntity<>(
+                    new StandardResponse(201, "Images added", note.getNoteId()),
+                    HttpStatus.CREATED
+            );
+        } catch (Exception e){
+            throw new NoteUpdateException(e.getMessage());
+        }
     }
 }

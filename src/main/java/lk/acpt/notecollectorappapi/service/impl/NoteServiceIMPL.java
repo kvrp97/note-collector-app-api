@@ -1,12 +1,15 @@
 package lk.acpt.notecollectorappapi.service.impl;
 
+import lk.acpt.notecollectorappapi.dto.request.RequestNoteImageRemoveDTO;
 import lk.acpt.notecollectorappapi.dto.request.RequestUpdateNoteTitleAndDescriptionDTO;
 import lk.acpt.notecollectorappapi.dto.response.ResponseNoteDTO;
 import lk.acpt.notecollectorappapi.entity.Note;
 import lk.acpt.notecollectorappapi.entity.NoteImage;
+import lk.acpt.notecollectorappapi.exception.ImageRemoveException;
 import lk.acpt.notecollectorappapi.exception.ImageUploadException;
 import lk.acpt.notecollectorappapi.exception.NotFoundException;
 import lk.acpt.notecollectorappapi.repo.NoteRepo;
+import lk.acpt.notecollectorappapi.service.NoteImageService;
 import lk.acpt.notecollectorappapi.service.NoteService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -15,12 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -30,9 +30,10 @@ public class NoteServiceIMPL implements NoteService {
     private NoteRepo noteRepo;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private NoteImageService noteImageService;
 
-    private final String FOLDER_PATH = "C:\\Users\\Ravindu\\Desktop\\AFSD\\NoteApp\\note-collector-app-api\\src\\main\\resources\\static\\images\\";
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     @Transactional
@@ -44,19 +45,13 @@ public class NoteServiceIMPL implements NoteService {
         if (images!=null){
             List<NoteImage> noteImageList = new ArrayList<>();
             for (MultipartFile image : images){
-                String imageName = UUID.randomUUID().toString().substring(0,8) + Objects.requireNonNull(image.getOriginalFilename()).replaceAll("\\s","");
-                String imagePath = FOLDER_PATH + imageName;
                 try {
-                    image.transferTo(new File(imagePath));
-                }catch (Exception e) {
+                    NoteImage noteImage = noteImageService.addImage(image);
+                    noteImageList.add(noteImage);
+                } catch (Exception e){
                     System.err.println(e);
                     throw new ImageUploadException(e.getMessage());
                 }
-                NoteImage noteImage = new NoteImage();
-                noteImage.setImageName(imageName);
-                noteImage.setImagePath("http://localhost:8091/images/" +imageName);
-
-                noteImageList.add(noteImage);
             }
             note.setNoteImages(noteImageList);
         }
@@ -94,7 +89,41 @@ public class NoteServiceIMPL implements NoteService {
             noteRepo.save(note);
             return note;
         } else {
-            throw new NotFoundException("Note not found");
+            throw new NotFoundException("Note not found for id : "+noteTitleAndDescriptionDTO.getNoteId());
+        }
+    }
+
+    @Override
+    public Note updateNoteByAddingImage(Integer noteId, String dateTime, MultipartFile[] images) throws ImageUploadException {
+        Note note = noteRepo.findById(noteId).orElseThrow(()-> new NotFoundException("Invalid note id : "+ noteId));
+        note.setDateTime(dateTime);
+        for (MultipartFile image : images){
+            try {
+                NoteImage noteImage = noteImageService.addImage(image);
+                note.getNoteImages().add(noteImage);
+            } catch (Exception e){
+                System.err.println(e);
+                throw new ImageUploadException(e.getMessage());
+            }
+        }
+        noteRepo.save(note);
+        return note;
+    }
+
+    @Override
+    public Note updateNoteByRemovingImages(RequestNoteImageRemoveDTO noteImageRemoveDTO) throws ImageRemoveException {
+        if (noteRepo.existsById(noteImageRemoveDTO.getNoteId())){
+            Note note = noteRepo.getNoteByNoteId(noteImageRemoveDTO.getNoteId());
+            note.setDateTime(noteImageRemoveDTO.getDateTime());
+            List<NoteImage> noteImageList = noteImageRemoveDTO.getNoteImageList();
+            try {
+                noteImageService.removeImage(noteImageList);
+            } catch (IOException e) {
+                throw new ImageRemoveException(e.getMessage());
+            }
+            return note;
+        } else {
+            throw new NotFoundException("No Note found for id : "+noteImageRemoveDTO.getNoteId());
         }
     }
 
