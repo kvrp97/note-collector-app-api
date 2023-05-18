@@ -140,4 +140,9 @@ public class NoteServiceIMPL implements NoteService {
         return true;
     }
 
+    @Override
+    public byte[] downloadNoteImage(String fileName) throws IOException {
+        return noteImageService.downloadNoteImage(fileName);
+    }
+
 }

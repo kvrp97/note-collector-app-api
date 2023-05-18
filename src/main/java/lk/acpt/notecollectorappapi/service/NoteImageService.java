@@ -10,4 +10,6 @@ public interface NoteImageService {
     NoteImage addImage(MultipartFile image) throws IOException;
 
     void removeImage(List<NoteImage> noteImageList) throws IOException;
+
+    byte[] downloadNoteImage(String fileName) throws IOException;
 }

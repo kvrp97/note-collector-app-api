@@ -25,4 +25,6 @@ public interface NoteService {
     Note updateNoteByRemovingImages(RequestNoteImageRemoveDTO noteImageRemoveDTO) throws ImageRemoveException;
 
     boolean deleteNote(Integer noteId) throws ImageRemoveException;
+
+    byte[] downloadNoteImage(String fileName) throws IOException;
 }

@@ -11,10 +11,12 @@ import lk.acpt.notecollectorappapi.service.NoteService;
 import lk.acpt.notecollectorappapi.util.StandardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -39,6 +41,14 @@ public class NoteController {
         } catch (Exception e) {
             throw new NoteSaveException(e.getMessage());
         }
+    }
+
+    @GetMapping("/image/{fileName}")
+    public ResponseEntity<byte[]> downloadNoteImage(@PathVariable String fileName) throws IOException {
+        byte[] imageData = noteService.downloadNoteImage(fileName);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
     }
 
     @GetMapping("/get-all-notes")
