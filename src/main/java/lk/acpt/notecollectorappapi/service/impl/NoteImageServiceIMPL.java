@@ -35,8 +35,6 @@ public class NoteImageServiceIMPL implements NoteImageService {
         image.transferTo(new File(imageFolderPath));
         NoteImage noteImage = new NoteImage();
         noteImage.setImageName(imageName);
-//        noteImage.setImagePath("http://13.126.175.133:8080/note-collector-app-api-0.0.1-SNAPSHOT/api/v1/note/image/" +imageName);
-        noteImage.setImagePath("http://192.168.8.190:8091/api/v1/note/image/" +imageName);
         return noteImage;
     }
 
