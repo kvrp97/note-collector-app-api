@@ -22,7 +22,11 @@ public class NoteImageServiceIMPL implements NoteImageService {
     @Autowired
     private NoteImageRepo noteImageRepo;
 
-    private final String FOLDER_PATH = "C:\\Users\\Ravindu\\Desktop\\AFSD\\NoteApp\\noteImages\\";
+//    AWS path
+//    private final String FOLDER_PATH = "/opt/apache-tomcat-8.5.88/webapps/note-collector-app-api-0.0.1-SNAPSHOT/WEB-INF/classes/noteImages/";
+
+    //local path
+    private final String FOLDER_PATH = "C:\\Users\\Ravindu\\Desktop\\AFSD\\NoteApp\\note-collector-app-api\\src\\main\\resources\\noteImages\\";
 
     @Override
     public NoteImage addImage(MultipartFile image) throws IOException {
@@ -31,6 +35,7 @@ public class NoteImageServiceIMPL implements NoteImageService {
         image.transferTo(new File(imageFolderPath));
         NoteImage noteImage = new NoteImage();
         noteImage.setImageName(imageName);
+//        noteImage.setImagePath("http://13.126.175.133:8080/note-collector-app-api-0.0.1-SNAPSHOT/api/v1/note/image/" +imageName);
         noteImage.setImagePath("http://192.168.8.190:8091/api/v1/note/image/" +imageName);
         return noteImage;
     }

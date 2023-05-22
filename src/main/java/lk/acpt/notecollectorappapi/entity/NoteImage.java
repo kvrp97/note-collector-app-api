@@ -20,7 +20,7 @@ public class NoteImage {
     @Column(name = "image_name")
     private String imageName;
 
-    @Column(name = "image_path")
+    @Column(name = "image_path", length = 400)
     private String imagePath;
 
 }
