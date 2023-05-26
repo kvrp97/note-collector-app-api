@@ -27,13 +27,14 @@ public class NoteController {
     private NoteService noteService;
 
 
-    @PostMapping("save")
-    public ResponseEntity<StandardResponse> saveNote(@RequestParam("title") String title,
+    @PostMapping("/save")
+    public ResponseEntity<StandardResponse> saveNote(@RequestParam("userId") Integer userId,
+                                                     @RequestParam("title") String title,
                                                      @RequestParam("description") String description,
                                                      @RequestParam("dateTime") String dateTime,
                                                      @RequestParam(value = "images", required = false) MultipartFile[] images) throws NoteSaveException {
         try {
-            Note note = noteService.saveNote(title,description,dateTime,images);
+            Note note = noteService.saveNote(userId,title,description,dateTime,images);
             return new ResponseEntity<>(
                     new StandardResponse(201, "New Note Added", "Note Id : "+ note.getNoteId()),
                     HttpStatus.CREATED
@@ -51,9 +52,9 @@ public class NoteController {
                 .body(imageData);
     }
 
-    @GetMapping("/get-all-notes")
-    public ResponseEntity<StandardResponse> getAllNotes(){
-        List<ResponseNoteDTO> noteDTOList = noteService.getAllNotes();
+    @GetMapping("/get-all-notes/{userId}")
+    public ResponseEntity<StandardResponse> getAllNotes(@PathVariable Integer userId){
+        List<ResponseNoteDTO> noteDTOList = noteService.getAllNotes(userId);
         return new ResponseEntity<>(
                 new StandardResponse(200, "Success", noteDTOList),
                 HttpStatus.OK
@@ -61,8 +62,9 @@ public class NoteController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<StandardResponse> searchNotes(@RequestParam(value = "searchKeyword") String searchKeyword){
-        List<ResponseNoteDTO> noteDTOList = noteService.searchNotes(searchKeyword);
+    public ResponseEntity<StandardResponse> searchNotes(@RequestParam(value = "userId") Integer userId,
+                                                        @RequestParam(value = "searchKeyword") String searchKeyword){
+        List<ResponseNoteDTO> noteDTOList = noteService.searchNotes(userId, searchKeyword);
         return new ResponseEntity<>(
                 new StandardResponse(200, "Success", noteDTOList),
                 HttpStatus.OK

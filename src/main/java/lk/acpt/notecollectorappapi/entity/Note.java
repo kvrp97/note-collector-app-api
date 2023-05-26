@@ -18,6 +18,9 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer noteId;
 
+    @Column(name = "user_id", length = 25)
+    private Integer userId;
+
     @Column(name = "note_title", length = 110)
     private String title;
 

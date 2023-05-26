@@ -2,6 +2,7 @@ package lk.acpt.notecollectorappapi.controller;
 
 import lk.acpt.notecollectorappapi.dto.request.RequestUserLogInDTO;
 import lk.acpt.notecollectorappapi.dto.request.RequestSaveUserDTO;
+import lk.acpt.notecollectorappapi.dto.response.ResponseUserDTO;
 import lk.acpt.notecollectorappapi.entity.User;
 import lk.acpt.notecollectorappapi.service.UserService;
 import lk.acpt.notecollectorappapi.util.StandardResponse;
@@ -22,7 +23,7 @@ public class UserController {
     public ResponseEntity<StandardResponse> saveUser(@RequestBody RequestSaveUserDTO saveUserDTO){
         User savedUser = userService.saveUser(saveUserDTO);
         return new ResponseEntity<>(
-                new StandardResponse(201,"User saved successfully", savedUser.getFirstName()),
+                new StandardResponse(201,"User saved successfully", savedUser.getUserId()),
                 HttpStatus.CREATED
         );
     }
@@ -30,6 +31,6 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<StandardResponse> authenticateUser(@RequestBody RequestUserLogInDTO logInDTO) {
         User authUser = userService.authenticateUser(logInDTO);
-        return ResponseEntity.ok(new StandardResponse(200, "Authentication Successful", authUser.getFirstName()));
+        return ResponseEntity.ok(new StandardResponse(200, "Authentication Successful", new ResponseUserDTO(authUser.getUserId(), authUser.getFirstName())));
     }
 }

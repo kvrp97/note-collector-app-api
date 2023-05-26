@@ -11,10 +11,10 @@ import java.util.List;
 @EnableJpaRepositories
 @Repository
 public interface NoteRepo extends JpaRepository<Note,Integer> {
-    List<Note> findAllByOrderByDateTimeDesc();
+    List<Note> findAllByUserIdOrderByDateTimeDesc(Integer userId);
 
-    @Query(value = "select n from Note n where n.title like %?1% or n.description like %?1% order by n.dateTime desc")
-    List<Note> searchNotes(String searchKeyword);
+    @Query(value = "select * from notes n where n.user_id = ?1 and ( n.note_title like %?2% or n.note_description like %?2% ) order by n.date_time desc", nativeQuery = true)
+    List<Note> searchNotes(Integer userId, String searchKeyword);
 
     Note getNoteByNoteId(Integer noteId);
 }

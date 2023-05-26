@@ -37,8 +37,9 @@ public class NoteServiceIMPL implements NoteService {
 
     @Override
     @Transactional
-    public Note saveNote(String title, String description, String dateTime, MultipartFile[] images) throws ImageUploadException {
+    public Note saveNote(Integer userId, String title, String description, String dateTime, MultipartFile[] images) throws ImageUploadException {
         Note note = new Note();
+        note.setUserId(userId);
         note.setTitle(title);
         note.setDescription(description);
         note.setDateTime(dateTime);
@@ -60,8 +61,8 @@ public class NoteServiceIMPL implements NoteService {
     }
 
     @Override
-    public List<ResponseNoteDTO> getAllNotes() {
-        List<Note> noteList = noteRepo.findAllByOrderByDateTimeDesc();
+    public List<ResponseNoteDTO> getAllNotes(Integer userId) {
+        List<Note> noteList = noteRepo.findAllByUserIdOrderByDateTimeDesc(userId);
         List<ResponseNoteDTO> noteDTOList = modelMapper
                 .map(noteList, new TypeToken<List<ResponseNoteDTO>>(){
                 }.getType());
@@ -69,8 +70,8 @@ public class NoteServiceIMPL implements NoteService {
     }
 
     @Override
-    public List<ResponseNoteDTO> searchNotes(String searchKeyword) {
-        List<Note> noteList = noteRepo.searchNotes(searchKeyword);
+    public List<ResponseNoteDTO> searchNotes(Integer userId, String searchKeyword) {
+        List<Note> noteList = noteRepo.searchNotes(userId, searchKeyword);
         List<ResponseNoteDTO> noteDTOList = modelMapper
                 .map(noteList, new TypeToken<List<ResponseNoteDTO>>(){
                 }.getType());

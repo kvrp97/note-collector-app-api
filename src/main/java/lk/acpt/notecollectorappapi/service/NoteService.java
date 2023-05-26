@@ -12,11 +12,11 @@ import java.io.IOException;
 import java.util.List;
 
 public interface NoteService {
-    Note saveNote(String title, String description, String dateTime, MultipartFile[] images) throws IOException;
+    Note saveNote(Integer userId, String title, String description, String dateTime, MultipartFile[] images) throws IOException;
 
-    List<ResponseNoteDTO> getAllNotes();
+    List<ResponseNoteDTO> getAllNotes(Integer userId);
 
-    List<ResponseNoteDTO> searchNotes(String searchKeyword);
+    List<ResponseNoteDTO> searchNotes(Integer userId, String searchKeyword);
 
     Note updateNoteTitleAndDescription(RequestUpdateNoteTitleAndDescriptionDTO noteTitleAndDescriptionDTO);
 
